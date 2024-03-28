@@ -12,3 +12,46 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id           Int           @id @default(autoincrement())
+  name         String        @db.VarChar(50)
+  email        String        @unique @db.VarChar(50)
+  password     String
+  profile      Profile?
+  bankAccounts BankAccount[]
+}
+
+model Profile {
+  id             Int          @id @default(autoincrement())
+  identityType   IdentityType
+  identityNumber Int          @unique
+  address        String
+  userId         Int          @unique
+  user           User         @relation(fields: [userId], references: [id])
+}
+
+model BankAccount {
+  id                        Int           @id @default(autoincrement())
+  bankName                  String        @db.VarChar(20)
+  bankAccountNumber         Int           @unique
+  balance                   Int           @default(0)
+  userId                    Int
+  user                      User          @relation(fields: [userId], references: [id])
+  transactionsAsSource      Transaction[] @relation("source")
+  transactionsAsDestination Transaction[] @relation("destination")
+}
+
+model Transaction {
+  id                   Int         @id @default(autoincrement())
+  sourceAccountId      Int
+  destinationAccountId Int
+  sourceAccount        BankAccount @relation("source", fields: [sourceAccountId], references: [id])
+  destinationAccount   BankAccount @relation("destination", fields: [destinationAccountId], references: [id])
+}
+
+enum IdentityType {
+  KTP
+  SIM
+  Passport
+}

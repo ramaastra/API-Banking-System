@@ -4,7 +4,21 @@ const prisma = new PrismaClient();
 module.exports = {
   getAll: async (req, res, next) => {
     try {
-      const users = await prisma.user.findMany();
+      let users;
+
+      if (req.query) {
+        const { search: searchKeyword } = req.query;
+        users = await prisma.user.findMany({
+          where: {
+            name: {
+              contains: searchKeyword,
+              mode: 'insensitive'
+            }
+          }
+        });
+      } else {
+        users = await prisma.user.findMany();
+      }
 
       res.status(200).json({
         status: true,

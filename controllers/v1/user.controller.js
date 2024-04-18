@@ -115,7 +115,8 @@ module.exports = {
       ) {
         res.status(400).json({
           status: false,
-          message: `already found a user profile record with corresponding identity number`,
+          message:
+            'already found a user profile record with corresponding email or identity number',
           data: null
         });
       }

@@ -150,7 +150,7 @@ module.exports = {
         }
       });
 
-      res.status(200).json({
+      res.status(201).json({
         status: true,
         message: 'successfully created new transaction record',
         data: {

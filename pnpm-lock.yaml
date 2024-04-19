@@ -17,6 +17,12 @@ dependencies:
   morgan:
     specifier: ^1.10.0
     version: 1.10.0
+  swagger-ui-express:
+    specifier: ^5.0.0
+    version: 5.0.0(express@4.19.2)
+  yaml:
+    specifier: ^2.4.1
+    version: 2.4.1
 
 devDependencies:
   prisma:
@@ -553,6 +559,20 @@ packages:
     engines: {node: '>= 0.8'}
     dev: false
 
+  /swagger-ui-dist@5.13.0:
+    resolution: {integrity: sha512-uaWhh6j18IIs5tOX0arvIBnVINAzpTXaQXkr7qAk8zoupegJVg0UU/5+S/FgsgVCnzVsJ9d7QLjIxkswEeTg0Q==}
+    dev: false
+
+  /swagger-ui-express@5.0.0(express@4.19.2):
+    resolution: {integrity: sha512-tsU9tODVvhyfkNSvf03E6FAk+z+5cU3lXAzMy6Pv4av2Gt2xA0++fogwC4qo19XuFf6hdxevPuVCSKFuMHJhFA==}
+    engines: {node: '>= v0.10.32'}
+    peerDependencies:
+      express: '>=4.0.0 || >=5.0.0-beta'
+    dependencies:
+      express: 4.19.2
+      swagger-ui-dist: 5.13.0
+    dev: false
+
   /toidentifier@1.0.1:
     resolution: {integrity: sha512-o5sSPKEkg/DIQNmH43V0/uerLrpzVedkUh8tGNvaeXpfpuwjKenlSox/2O/BTlZUtEe+JG7s5YhEz608PlAHRA==}
     engines: {node: '>=0.6'}
@@ -579,4 +599,10 @@ packages:
   /vary@1.1.2:
     resolution: {integrity: sha512-BNGbWLfd0eUPabhkXUVm0j8uuvREyTh5ovRa/dyow/BqAbZJyC+5fU+IzQOzmAKzYqYRAISoRhdQr3eIZ/PXqg==}
     engines: {node: '>= 0.8'}
+    dev: false
+
+  /yaml@2.4.1:
+    resolution: {integrity: sha512-pIXzoImaqmfOrL7teGUBt/T7ZDnyeGBWyXQBvOVhLkWLN37GXv8NMLK406UY6dS51JfcQHsmcW5cJ441bHg6Lg==}
+    engines: {node: '>= 14'}
+    hasBin: true
     dev: false

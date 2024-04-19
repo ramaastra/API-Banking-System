@@ -75,15 +75,7 @@ module.exports = {
           balance,
           userId
         },
-        include: {
-          user: {
-            select: {
-              id: true,
-              name: true,
-              email: true
-            }
-          }
-        }
+        include: { user: true }
       });
 
       res.status(201).json({

@@ -111,15 +111,7 @@ module.exports = {
             decrement: amount
           }
         },
-        include: {
-          user: {
-            select: {
-              id: true,
-              name: true,
-              email: true
-            }
-          }
-        }
+        include: { user: true }
       });
 
       const updatedDestinationAccount = await prisma.bankAccount.update({
@@ -131,15 +123,7 @@ module.exports = {
             increment: amount
           }
         },
-        include: {
-          user: {
-            select: {
-              id: true,
-              name: true,
-              email: true
-            }
-          }
-        }
+        include: { user: true }
       });
 
       const transaction = await prisma.transaction.create({

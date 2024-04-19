@@ -20,7 +20,7 @@ module.exports = {
       const accountId = parseInt(req.params.id);
 
       if (!accountId) {
-        res.status(400).json({
+        return res.status(400).json({
           status: false,
           message: 'id params is required with the value of an integer',
           data: null
@@ -37,7 +37,7 @@ module.exports = {
       });
 
       if (!account) {
-        res.status(400).json({
+        return res.status(400).json({
           status: false,
           message: `cannot find account record with id ${accountId}`,
           data: null
@@ -61,7 +61,7 @@ module.exports = {
       const balance = req.body.balance || 0;
 
       if (!bankName || !bankAccountNumber || !userId) {
-        res.status(400).json({
+        return res.status(400).json({
           status: false,
           message: `field 'bankName', 'bankAccountNumber', and 'userId' are required`,
           data: null

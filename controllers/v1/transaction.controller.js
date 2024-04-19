@@ -20,7 +20,7 @@ module.exports = {
       const transactionId = parseInt(req.params.id);
 
       if (!transactionId) {
-        res.status(400).json({
+        return res.status(400).json({
           status: false,
           message: 'id params is required with the value of an integer',
           data: null
@@ -40,7 +40,7 @@ module.exports = {
       });
 
       if (!transaction) {
-        res.status(400).json({
+        return res.status(400).json({
           status: false,
           message: `cannot find transaction record with id ${transactionId}`,
           data: null
@@ -63,21 +63,19 @@ module.exports = {
       const amount = parseInt(req.body.amount);
 
       if (!sourceAccountId || !destinationAccountId || !amount) {
-        res.status(400).json({
+        return res.status(400).json({
           status: false,
           message: `field 'sourceAccountId', 'destinationAccountId', and 'amount' are required`,
           data: null
         });
-        return;
       }
 
       if (sourceAccountId === destinationAccountId) {
-        res.status(400).json({
+        return res.status(400).json({
           status: false,
           message: `field 'sourceAccountId' and 'destinationAccountId' should not have the same value`,
           data: null
         });
-        return;
       }
 
       const sourceAccount = await prisma.bankAccount.findUnique({
@@ -85,16 +83,15 @@ module.exports = {
       });
 
       if (!sourceAccount) {
-        res.status(400).json({
+        return res.status(400).json({
           status: false,
           message: `cannot create transaction with source account that does not exist`,
           data: null
         });
-        return;
       }
 
       if (sourceAccount.balance < amount) {
-        res.status(400).json({
+        return res.status(400).json({
           status: false,
           message: `cannot create transaction from source account with id ${sourceAccountId} that has insufficient balance (current balance is ${sourceAccount.balance})`,
           data: null

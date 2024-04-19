@@ -34,7 +34,7 @@ module.exports = {
       const userId = parseInt(req.params.id);
 
       if (!userId) {
-        res.status(400).json({
+        return res.status(400).json({
           status: false,
           message: 'id params is required with the value of an integer',
           data: null
@@ -47,7 +47,7 @@ module.exports = {
       });
 
       if (!user) {
-        res.status(400).json({
+        return res.status(400).json({
           status: false,
           message: `cannot find user record with id ${userId}`,
           data: null
@@ -69,7 +69,7 @@ module.exports = {
       const identityNumber = parseInt(req.body.identityNumber);
 
       if (!name || !email || !password || !identityNumber || !address) {
-        res.status(400).json({
+        return res.status(400).json({
           status: false,
           message: `field 'name', 'email', 'password', 'identityType', 'identityNumber', and 'address' are required`,
           data: null
@@ -78,7 +78,7 @@ module.exports = {
 
       const validIdentityTypes = ['KTP', 'SIM', 'Passport'];
       if (!validIdentityTypes.includes(identityType)) {
-        res.status(400).json({
+        return res.status(400).json({
           status: false,
           message: `field identityType should have value of 'KTP', 'SIM', or 'Passport'`,
           data: null
@@ -113,7 +113,7 @@ module.exports = {
         error.name === 'PrismaClientKnownRequestError' &&
         error.code === 'P2002'
       ) {
-        res.status(400).json({
+        return res.status(400).json({
           status: false,
           message:
             'already found a user profile record with corresponding email or identity number',

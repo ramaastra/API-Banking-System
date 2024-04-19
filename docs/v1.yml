@@ -24,9 +24,6 @@ components:
         email:
           type: string
           example: john@gmail.com
-        password:
-          type: string
-          example: john#123
     Profile:
       type: object
       properties:

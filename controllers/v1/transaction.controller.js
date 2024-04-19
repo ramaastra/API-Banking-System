@@ -31,10 +31,26 @@ module.exports = {
         where: { id: transactionId },
         include: {
           sourceAccount: {
-            include: { user: true }
+            include: {
+              user: {
+                select: {
+                  id: true,
+                  name: true,
+                  email: true
+                }
+              }
+            }
           },
           destinationAccount: {
-            include: { user: true }
+            include: {
+              user: {
+                select: {
+                  id: true,
+                  name: true,
+                  email: true
+                }
+              }
+            }
           }
         }
       });
@@ -107,7 +123,15 @@ module.exports = {
             decrement: amount
           }
         },
-        include: { user: true }
+        include: {
+          user: {
+            select: {
+              id: true,
+              name: true,
+              email: true
+            }
+          }
+        }
       });
 
       const updatedDestinationAccount = await prisma.bankAccount.update({
@@ -119,7 +143,15 @@ module.exports = {
             increment: amount
           }
         },
-        include: { user: true }
+        include: {
+          user: {
+            select: {
+              id: true,
+              name: true,
+              email: true
+            }
+          }
+        }
       });
 
       const transaction = await prisma.transaction.create({

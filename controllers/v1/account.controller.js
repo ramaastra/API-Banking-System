@@ -31,7 +31,12 @@ module.exports = {
         where: { id: accountId },
         include: {
           user: {
-            include: { profile: true }
+            select: {
+              id: true,
+              name: true,
+              email: true,
+              profile: true
+            }
           }
         }
       });
@@ -75,7 +80,15 @@ module.exports = {
           balance,
           userId
         },
-        include: { user: true }
+        include: {
+          user: {
+            select: {
+              id: true,
+              name: true,
+              email: true
+            }
+          }
+        }
       });
 
       res.status(201).json({

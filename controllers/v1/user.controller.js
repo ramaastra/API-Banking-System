@@ -14,10 +14,21 @@ module.exports = {
               contains: searchKeyword,
               mode: 'insensitive'
             }
+          },
+          select: {
+            id: true,
+            name: true,
+            email: true
           }
         });
       } else {
-        users = await prisma.user.findMany();
+        users = await prisma.user.findMany({
+          select: {
+            id: true,
+            name: true,
+            email: true
+          }
+        });
       }
 
       res.status(200).json({
@@ -43,7 +54,12 @@ module.exports = {
 
       const user = await prisma.user.findUnique({
         where: { id: userId },
-        include: { profile: true }
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          profile: true
+        }
       });
 
       if (!user) {
@@ -98,7 +114,10 @@ module.exports = {
             }
           }
         },
-        include: {
+        select: {
+          id: true,
+          name: true,
+          email: true,
           profile: true
         }
       });

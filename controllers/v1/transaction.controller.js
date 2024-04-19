@@ -30,10 +30,10 @@ module.exports = {
       const transaction = await prisma.transaction.findUnique({
         where: { id: transactionId },
         include: {
-          destinationAccount: {
+          sourceAccount: {
             include: { user: true }
           },
-          sourceAccount: {
+          destinationAccount: {
             include: { user: true }
           }
         }

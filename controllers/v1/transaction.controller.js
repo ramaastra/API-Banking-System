@@ -96,7 +96,6 @@ module.exports = {
           message: `cannot create transaction from source account with id ${sourceAccountId} that has insufficient balance (current balance is ${sourceAccount.balance})`,
           data: null
         });
-        return;
       }
 
       const updatedSourceAccount = await prisma.bankAccount.update({

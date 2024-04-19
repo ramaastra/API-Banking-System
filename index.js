@@ -11,6 +11,10 @@ app.use(express.json());
 
 app.use('/api/v1', routerV1);
 
-app.listen(port, () => {
-  console.log(`Server is up and running on http://localhost:${port}`);
-});
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(port, () => {
+    console.log(`Server is up and running on http://localhost:${port}`);
+  });
+}
+
+module.exports = app;

@@ -1,0 +1,12 @@
+[
+  {
+    "bankName": "BNR",
+    "bankAccountNumber": 123456789,
+    "balance": 1000000
+  },
+  {
+    "bankName": "ACDMY",
+    "bankAccountNumber": 987654321,
+    "balance": 0
+  }
+]

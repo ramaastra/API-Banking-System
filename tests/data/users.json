@@ -1,0 +1,18 @@
+[
+  {
+    "name": "John Doe",
+    "email": "john@gmail.com",
+    "password": "abcdefg",
+    "identityType": "KTP",
+    "identityNumber": 567891234,
+    "address": "Jalan Raya Bintang Kejora"
+  },
+  {
+    "name": "Jane Smith",
+    "email": "jane@gmail.com",
+    "password": "abcdefg",
+    "identityType": "Passport",
+    "identityNumber": 567891235,
+    "address": "Jalan Raya Planet Bekasi"
+  }
+]

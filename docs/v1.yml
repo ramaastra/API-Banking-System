@@ -238,6 +238,9 @@ paths:
                     example: successfully create new user data with corresponding profile
                   data:
                     $ref: '#/components/schemas/User'
+                    properties:
+                      profile:
+                        $ref: '#/components/schemas/Profile'
         400:
           description: Bad request
           content:

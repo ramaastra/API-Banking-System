@@ -1,9 +1,7 @@
 const request = require('supertest');
 const app = require('../../index');
 const seedUsers = require('../data/users.json');
-const { truncateUserTable, getAuthHeader } = require('../helpers');
-
-const BASE_API = '/api/v1';
+const { baseApi, truncateUserTable, getAuthHeader } = require('../helpers');
 
 module.exports = {
   register: () => {
@@ -13,7 +11,7 @@ module.exports = {
 
     test('should show status code 201 and return the created user record', async () => {
       const { statusCode, body } = await request(app)
-        .post(`${BASE_API}/auth/register`)
+        .post(`${baseApi}/auth/register`)
         .send({
           name: seedUsers[0].name,
           email: seedUsers[0].email,
@@ -48,7 +46,7 @@ module.exports = {
 
     test('should show status code 400 if one of the required fields is missing in the request body', async () => {
       const { statusCode, body } = await request(app)
-        .post(`${BASE_API}/auth/register`)
+        .post(`${baseApi}/auth/register`)
         .send({
           name: seedUsers[1].name,
           email: seedUsers[1].email,
@@ -68,7 +66,7 @@ module.exports = {
 
     test('should show status code 400 if identityType field has invalid value', async () => {
       const { statusCode, body } = await request(app)
-        .post(`${BASE_API}/auth/register`)
+        .post(`${baseApi}/auth/register`)
         .send({
           name: seedUsers[1].name,
           email: seedUsers[1].email,
@@ -88,7 +86,7 @@ module.exports = {
 
     test('should show status code 400 if email or identityNumber is already registered', async () => {
       const { statusCode, body } = await request(app)
-        .post(`${BASE_API}/auth/register`)
+        .post(`${baseApi}/auth/register`)
         .send({
           name: seedUsers[1].name,
           email: seedUsers[0].email,
@@ -107,7 +105,7 @@ module.exports = {
     });
 
     afterAll(async () => {
-      await request(app).post(`${BASE_API}/auth/register`).send({
+      await request(app).post(`${baseApi}/auth/register`).send({
         name: seedUsers[1].name,
         email: seedUsers[1].email,
         password: seedUsers[1].password,
@@ -120,7 +118,7 @@ module.exports = {
   login: () => {
     test('should show status code 200 and return user object along with the login token', async () => {
       const { statusCode, body } = await request(app)
-        .post(`${BASE_API}/auth/login`)
+        .post(`${baseApi}/auth/login`)
         .send({
           email: seedUsers[0].email,
           password: seedUsers[0].password
@@ -143,7 +141,7 @@ module.exports = {
 
     test('should show status code 400 if one of the required fields is missing in the request body', async () => {
       const { statusCode, body } = await request(app)
-        .post(`${BASE_API}/auth/login`)
+        .post(`${baseApi}/auth/login`)
         .send({
           email: seedUsers[0].email,
           password: null
@@ -159,7 +157,7 @@ module.exports = {
 
     test('should show status code 400 if email or password is invalid or unmatch', async () => {
       const { statusCode, body } = await request(app)
-        .post(`${BASE_API}/auth/login`)
+        .post(`${baseApi}/auth/login`)
         .send({
           email: seedUsers[0].email,
           password: seedUsers[1].password
@@ -182,7 +180,7 @@ module.exports = {
 
     test('should show status code 200 if user provided the valid token', async () => {
       const { statusCode, body } = await request(app)
-        .get(`${BASE_API}/auth/authenticate`)
+        .get(`${baseApi}/auth/authenticate`)
         .set(authHeader);
 
       expect(statusCode).toBe(200);

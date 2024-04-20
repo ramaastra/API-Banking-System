@@ -7,6 +7,7 @@ const seedUsers = require('../data/users.json');
 const BASE_API = '/api/v1';
 
 module.exports = {
+  baseApi: BASE_API,
   truncateUserTable: async () => {
     await prisma.user.deleteMany();
   },

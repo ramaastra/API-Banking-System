@@ -1,34 +1,35 @@
 const request = require('supertest');
 const app = require('../../index');
 const seedTransactions = require('../data/transactions.json');
-const dbHelper = require('../helpers/db');
+const { truncateTransactionTable, getAuthHeader } = require('../helpers');
 
 const BASE_API = '/api/v1';
-const AUTH_HEADER = { Authorization: 'Bearer qwerty123' };
 
 module.exports = {
   create: () => {
+    let authHeader;
     let fetchedAccounts;
     let fetchedUsers;
 
     beforeAll(async () => {
-      await dbHelper.truncateTransactionTable();
+      authHeader = await getAuthHeader();
+      await truncateTransactionTable();
 
       const { body: fetchedAccountsResponse } = await request(app)
         .get(`${BASE_API}/accounts`)
-        .set(AUTH_HEADER);
+        .set(authHeader);
       fetchedAccounts = fetchedAccountsResponse.data;
 
       const { body: fetchedUsersResponse } = await request(app)
         .get(`${BASE_API}/users`)
-        .set(AUTH_HEADER);
+        .set(authHeader);
       fetchedUsers = fetchedUsersResponse.data;
     });
 
     test('should show status code 201 and return the created transaction record', async () => {
       const { statusCode, body } = await request(app)
         .post(`${BASE_API}/transactions`)
-        .set(AUTH_HEADER)
+        .set(authHeader)
         .send({
           sourceAccountId: fetchedAccounts[0].id,
           destinationAccountId: fetchedAccounts[1].id,
@@ -64,7 +65,7 @@ module.exports = {
     test('should show status code 400 if one of the required fields is missing in the request body', async () => {
       const { statusCode, body } = await request(app)
         .post(`${BASE_API}/transactions`)
-        .set(AUTH_HEADER)
+        .set(authHeader)
         .send({
           sourceAccountId: fetchedAccounts[1].id,
           destinationAccountId: fetchedAccounts[0].id,
@@ -82,7 +83,7 @@ module.exports = {
     test('should show status code 400 if sourceAccountId and destinationAccountId have the same value', async () => {
       const { statusCode, body } = await request(app)
         .post(`${BASE_API}/transactions`)
-        .set(AUTH_HEADER)
+        .set(authHeader)
         .send({
           sourceAccountId: fetchedAccounts[0].id,
           destinationAccountId: fetchedAccounts[0].id,
@@ -100,7 +101,7 @@ module.exports = {
     test('should show status code 400 if there is no existing acount with corresponding sourceAccountId', async () => {
       const { statusCode, body } = await request(app)
         .post(`${BASE_API}/transactions`)
-        .set(AUTH_HEADER)
+        .set(authHeader)
         .send({
           sourceAccountId: 1e5,
           destinationAccountId: fetchedAccounts[1].id,
@@ -118,7 +119,7 @@ module.exports = {
     test('should show status code 400 if there is no existing acount with corresponding destinationAccountId', async () => {
       const { statusCode, body } = await request(app)
         .post(`${BASE_API}/transactions`)
-        .set(AUTH_HEADER)
+        .set(authHeader)
         .send({
           sourceAccountId: fetchedAccounts[0].id,
           destinationAccountId: 1e5,
@@ -136,7 +137,7 @@ module.exports = {
     test('should show status code 400 if the amount to send is insufficient from source account', async () => {
       const { statusCode, body } = await request(app)
         .post(`${BASE_API}/transactions`)
-        .set(AUTH_HEADER)
+        .set(authHeader)
         .send({
           sourceAccountId: fetchedAccounts[1].id,
           destinationAccountId: fetchedAccounts[0].id,
@@ -169,21 +170,24 @@ module.exports = {
     });
 
     afterAll(async () => {
-      await request(app)
-        .post(`${BASE_API}/transactions`)
-        .set(AUTH_HEADER)
-        .send({
-          sourceAccountId: fetchedAccounts[1].id,
-          destinationAccountId: fetchedAccounts[0].id,
-          amount: seedTransactions[1].amount
-        });
+      await request(app).post(`${BASE_API}/transactions`).set(authHeader).send({
+        sourceAccountId: fetchedAccounts[1].id,
+        destinationAccountId: fetchedAccounts[0].id,
+        amount: seedTransactions[1].amount
+      });
     });
   },
   getAll: () => {
+    let authHeader;
+
+    beforeAll(async () => {
+      authHeader = await getAuthHeader();
+    });
+
     test('should show status code 200 and return all transaction records found', async () => {
       const { statusCode, body } = await request(app)
         .get(`${BASE_API}/transactions`)
-        .set(AUTH_HEADER);
+        .set(authHeader);
 
       expect(statusCode).toBe(200);
       expect(body).toHaveProperty('status');
@@ -213,18 +217,21 @@ module.exports = {
     });
   },
   getById: () => {
+    let authHeader;
     let fetchedTransactions;
     const fetchedAccounts = [];
 
     beforeAll(async () => {
+      authHeader = await getAuthHeader();
+
       const { body: fetchedTransactionsResponse } = await request(app)
         .get(`${BASE_API}/transactions`)
-        .set(AUTH_HEADER);
+        .set(authHeader);
       fetchedTransactions = fetchedTransactionsResponse.data;
 
       const { body: fetchedSourceAccountResponse } = await request(app)
         .get(`${BASE_API}/accounts/${fetchedTransactions[0].sourceAccountId}`)
-        .set(AUTH_HEADER);
+        .set(authHeader);
       delete fetchedSourceAccountResponse.data.user.profile;
       fetchedAccounts.push(fetchedSourceAccountResponse.data);
 
@@ -232,7 +239,7 @@ module.exports = {
         .get(
           `${BASE_API}/accounts/${fetchedTransactions[0].destinationAccountId}`
         )
-        .set(AUTH_HEADER);
+        .set(authHeader);
       delete fetchedDestinationAccountResponse.data.user.profile;
       fetchedAccounts.push(fetchedDestinationAccountResponse.data);
     });
@@ -240,7 +247,7 @@ module.exports = {
     test('should show status code 200 and return the corresponding transaction data', async () => {
       const { statusCode, body } = await request(app)
         .get(`${BASE_API}/transactions/${fetchedTransactions[0].id}`)
-        .set(AUTH_HEADER);
+        .set(authHeader);
 
       expect(statusCode).toBe(200);
       expect(body).toHaveProperty('status');
@@ -263,7 +270,7 @@ module.exports = {
     test('should show status code 400 if there is no record found with the corresponding transaction id', async () => {
       const { statusCode, body } = await request(app)
         .get(`${BASE_API}/transactions/${1e5}`)
-        .set(AUTH_HEADER);
+        .set(authHeader);
 
       expect(statusCode).toBe(400);
       expect(body).toHaveProperty('status');

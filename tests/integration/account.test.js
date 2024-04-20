@@ -1,27 +1,30 @@
 const request = require('supertest');
 const app = require('../../index');
 const seedAccounts = require('../data/accounts.json');
-const dbHelper = require('../helpers/db');
+const { truncateAccountTable, getAuthHeader } = require('../helpers');
 
 const BASE_API = '/api/v1';
-const AUTH_HEADER = { Authorization: 'Bearer qwerty123' };
 
 module.exports = {
   create: () => {
+    let authHeader;
     let fetchedUsers;
 
     beforeAll(async () => {
-      await dbHelper.truncateAccountTable();
+      await truncateAccountTable();
+
+      authHeader = await getAuthHeader();
+
       const { body: fetchedUsersResponse } = await request(app)
         .get(`${BASE_API}/users`)
-        .set(AUTH_HEADER);
+        .set(authHeader);
       fetchedUsers = fetchedUsersResponse.data;
     });
 
     test('should show status code 201 and return the created account record', async () => {
       const { statusCode, body } = await request(app)
         .post(`${BASE_API}/accounts`)
-        .set(AUTH_HEADER)
+        .set(authHeader)
         .send({
           bankName: seedAccounts[0].bankName,
           bankAccountNumber: seedAccounts[0].bankAccountNumber,
@@ -52,7 +55,7 @@ module.exports = {
     test('should show status code 400 if one of the required fields is missing in the request body', async () => {
       const { statusCode, body } = await request(app)
         .post(`${BASE_API}/accounts`)
-        .set(AUTH_HEADER)
+        .set(authHeader)
         .send({
           bankName: seedAccounts[1].bankName,
           bankAccountNumber: null,
@@ -71,7 +74,7 @@ module.exports = {
     test('should show status code 400 if bankAccountNumber is already registered', async () => {
       const { statusCode, body } = await request(app)
         .post(`${BASE_API}/accounts`)
-        .set(AUTH_HEADER)
+        .set(authHeader)
         .send({
           bankName: seedAccounts[1].bankName,
           bankAccountNumber: seedAccounts[0].bankAccountNumber,
@@ -90,7 +93,7 @@ module.exports = {
     test('should show status code 400 if there is no existing user with corresponding userId', async () => {
       const { statusCode, body } = await request(app)
         .post(`${BASE_API}/accounts`)
-        .set(AUTH_HEADER)
+        .set(authHeader)
         .send({
           bankName: seedAccounts[1].bankName,
           bankAccountNumber: seedAccounts[1].bankAccountNumber,
@@ -125,7 +128,7 @@ module.exports = {
     });
 
     afterAll(async () => {
-      await request(app).post(`${BASE_API}/accounts`).set(AUTH_HEADER).send({
+      await request(app).post(`${BASE_API}/accounts`).set(authHeader).send({
         bankName: seedAccounts[1].bankName,
         bankAccountNumber: seedAccounts[1].bankAccountNumber,
         balance: seedAccounts[1].balance,
@@ -134,19 +137,22 @@ module.exports = {
     });
   },
   getAll: () => {
+    let authHeader;
     let fetchedUsers;
 
     beforeAll(async () => {
+      authHeader = await getAuthHeader();
+
       const { body: fetchedUsersResponse } = await request(app)
         .get(`${BASE_API}/users`)
-        .set(AUTH_HEADER);
+        .set(authHeader);
       fetchedUsers = fetchedUsersResponse.data;
     });
 
     test('should show status code 200 and return all account records found', async () => {
       const { statusCode, body } = await request(app)
         .get(`${BASE_API}/accounts`)
-        .set(AUTH_HEADER);
+        .set(authHeader);
 
       expect(statusCode).toBe(200);
       expect(body).toHaveProperty('status');
@@ -182,23 +188,26 @@ module.exports = {
     });
   },
   getById: () => {
+    let authHeader;
     let fetchedAccounts;
 
     beforeAll(async () => {
+      authHeader = await getAuthHeader();
+
       const { body: fetchedAccountsResponse } = await request(app)
         .get(`${BASE_API}/accounts`)
-        .set(AUTH_HEADER);
+        .set(authHeader);
       fetchedAccounts = fetchedAccountsResponse.data;
     });
 
     test('should show status code 200 and return the corresponding account data', async () => {
       const { body: fetchedUserResponse } = await request(app)
         .get(`${BASE_API}/users/${fetchedAccounts[0].userId}`)
-        .set(AUTH_HEADER);
+        .set(authHeader);
 
       const { statusCode, body } = await request(app)
         .get(`${BASE_API}/accounts/${fetchedAccounts[0].id}`)
-        .set(AUTH_HEADER);
+        .set(authHeader);
 
       expect(statusCode).toBe(200);
       expect(body).toHaveProperty('status');
@@ -227,7 +236,7 @@ module.exports = {
     test('should show status code 400 if there is no record found with the corresponding account id', async () => {
       const { statusCode, body } = await request(app)
         .get(`${BASE_API}/accounts/${1e5}`)
-        .set(AUTH_HEADER);
+        .set(authHeader);
 
       expect(statusCode).toBe(400);
       expect(body).toHaveProperty('status');

@@ -1,14 +1,14 @@
 const request = require('supertest');
 const app = require('../../index');
 const seedUsers = require('../data/users.json');
-const dbHelper = require('../helpers/db');
+const { truncateUserTable, getAuthHeader } = require('../helpers');
 
 const BASE_API = '/api/v1';
 
 module.exports = {
   register: () => {
     beforeAll(async () => {
-      await dbHelper.truncateUserTable();
+      await truncateUserTable();
     });
 
     test('should show status code 201 and return the created user record', async () => {
@@ -174,22 +174,16 @@ module.exports = {
     });
   },
   authenticate: () => {
-    const AUTH_HEADER = {};
+    let authHeader;
 
     beforeAll(async () => {
-      const { body: loginResponse } = await request(app)
-        .post(`${BASE_API}/auth/login`)
-        .send({
-          email: seedUsers[0].email,
-          password: seedUsers[0].password
-        });
-      AUTH_HEADER['Authorization'] = `Bearer ${loginResponse.data.token}`;
+      authHeader = await getAuthHeader();
     });
 
     test('should show status code 200 if user provided the valid token', async () => {
       const { statusCode, body } = await request(app)
         .get(`${BASE_API}/auth/authenticate`)
-        .set(AUTH_HEADER);
+        .set(authHeader);
 
       expect(statusCode).toBe(200);
       expect(body).toHaveProperty('status');

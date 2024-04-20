@@ -1,17 +1,22 @@
 const request = require('supertest');
 const app = require('../../index');
 const seedUsers = require('../data/users.json');
-const dbHelper = require('../helpers/db');
+const { getAuthHeader } = require('../helpers');
 
 const BASE_API = '/api/v1';
-const AUTH_HEADER = { Authorization: 'Bearer qwerty123' };
 
 module.exports = {
   getAll: () => {
+    let authHeader;
+
+    beforeAll(async () => {
+      authHeader = await getAuthHeader();
+    });
+
     test('should show status code 200 and return all user records found', async () => {
       const { statusCode, body } = await request(app)
         .get(`${BASE_API}/users`)
-        .set(AUTH_HEADER);
+        .set(authHeader);
 
       expect(statusCode).toBe(200);
       expect(body).toHaveProperty('status');
@@ -39,12 +44,15 @@ module.exports = {
     });
   },
   getById: () => {
+    let authHeader;
     let fetchedUsers;
 
     beforeAll(async () => {
+      authHeader = await getAuthHeader();
+
       const { body: fetchedUsersResponse } = await request(app)
         .get(`${BASE_API}/users`)
-        .set(AUTH_HEADER);
+        .set(authHeader);
 
       fetchedUsers = fetchedUsersResponse.data;
     });
@@ -52,7 +60,7 @@ module.exports = {
     test('should show status code 200 and return the corresponding user data', async () => {
       const { statusCode, body } = await request(app)
         .get(`${BASE_API}/users/${fetchedUsers[0].id}`)
-        .set(AUTH_HEADER);
+        .set(authHeader);
 
       expect(statusCode).toBe(200);
       expect(body).toHaveProperty('status');
@@ -81,7 +89,7 @@ module.exports = {
     test('should show status code 400 if there is no record found with the corresponding user id', async () => {
       const { statusCode, body } = await request(app)
         .get(`${BASE_API}/users/${1e5}`)
-        .set(AUTH_HEADER);
+        .set(authHeader);
 
       expect(statusCode).toBe(400);
       expect(body).toHaveProperty('status');

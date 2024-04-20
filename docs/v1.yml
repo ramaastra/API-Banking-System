@@ -221,6 +221,52 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UnauthorizedResponse'
+  /api/v1/auth/login:
+    post:
+      description: Login with registered credentials
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: john@gmail.com
+                password:
+                  type: string
+                  example: john#
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: login successfully
+                  data:
+                    allOf:
+                      - $ref: '#/components/schemas/User'
+                    properties:
+                      token:
+                        type: string
+                        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzksIm5hbWUiOiJKb2huIERvZSIsImVtYWlsIjoiam9obkBnbWFpbC5jb20iLCJpYXQiOjE3MTM1OTgwNjR9.eb5k29XYGudrGriq-jeFGTPpLqxptI6FwqXxuX-gV7Y
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BadRequestResponse'
+                properties:
+                  message:
+                    example: invalid email or password
   /api/v1/users:
     get:
       description: Fetch all user records

@@ -10,7 +10,7 @@
   {
     "name": "Jane Smith",
     "email": "jane@gmail.com",
-    "password": "abcdefg",
+    "password": "123456",
     "identityType": "Passport",
     "identityNumber": 567891235,
     "address": "Jalan Raya Planet Bekasi"

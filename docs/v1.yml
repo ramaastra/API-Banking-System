@@ -267,6 +267,36 @@ paths:
                 properties:
                   message:
                     example: invalid email or password
+  /api/v1/auth/authenticate:
+    get:
+      description: Fetch all user records
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: successfully fetched 1 user records
+                  data:
+                    type: object
+                    properties:
+                      user:
+                        $ref: '#/components/schemas/User'
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedResponse'
   /api/v1/users:
     get:
       description: Fetch all user records

@@ -266,7 +266,9 @@ paths:
                   - $ref: '#/components/schemas/BadRequestResponse'
                 properties:
                   message:
-                    example: invalid email or password
+                    oneOf:
+                      - example: field 'email' and 'password' are required
+                      - example: invalid email or password
   /api/v1/auth/authenticate:
     get:
       description: Fetch all user records

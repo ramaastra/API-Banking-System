@@ -7,6 +7,7 @@ const BASE_API = '/api/v1';
 
 describe(`POST ${BASE_API}/auth/register`, authSpecTest.register);
 describe(`POST ${BASE_API}/auth/login`, authSpecTest.login);
+describe(`POST ${BASE_API}/auth/authenticate`, authSpecTest.authenticate);
 
 describe(`GET ${BASE_API}/users`, userSpecTest.getAll);
 describe(`GET ${BASE_API}/users/{id}`, userSpecTest.getById);

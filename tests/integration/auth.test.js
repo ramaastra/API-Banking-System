@@ -172,5 +172,36 @@ module.exports = {
       expect(body.status).toBe(false);
       expect(body.data).toBe(null);
     });
+  },
+  authenticate: () => {
+    const AUTH_HEADER = {};
+
+    beforeAll(async () => {
+      const { body: loginResponse } = await request(app)
+        .post(`${BASE_API}/auth/login`)
+        .send({
+          email: seedUsers[0].email,
+          password: seedUsers[0].password
+        });
+      AUTH_HEADER['Authorization'] = `Bearer ${loginResponse.data.token}`;
+    });
+
+    test('should show status code 200 if user provided the valid token', async () => {
+      const { statusCode, body } = await request(app)
+        .get(`${BASE_API}/auth/authenticate`)
+        .set(AUTH_HEADER);
+
+      expect(statusCode).toBe(200);
+      expect(body).toHaveProperty('status');
+      expect(body).toHaveProperty('message');
+      expect(body).toHaveProperty('data');
+      expect(body.status).toBe(true);
+      expect(body.data).toHaveProperty('user');
+      expect(body.data.user).toHaveProperty('id');
+      expect(body.data.user).toHaveProperty('name');
+      expect(body.data.user).toHaveProperty('email');
+      expect(body.data.user.name).toBe(seedUsers[0].name);
+      expect(body.data.user.email).toBe(seedUsers[0].email);
+    });
   }
 };

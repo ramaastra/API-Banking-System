@@ -1,10 +1,12 @@
+const authSpecTest = require('./auth.test');
 const userSpecTest = require('./user.test');
 const accountSpecTest = require('./account.test');
 const transactionSpecTest = require('./transaction.test');
 
 const BASE_API = '/api/v1';
 
-describe(`POST ${BASE_API}/users`, userSpecTest.create);
+describe(`POST ${BASE_API}/auth/register`, authSpecTest.register);
+
 describe(`GET ${BASE_API}/users`, userSpecTest.getAll);
 describe(`GET ${BASE_API}/users/{id}`, userSpecTest.getById);
 

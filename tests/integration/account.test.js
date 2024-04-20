@@ -214,7 +214,6 @@ module.exports = {
       expect(body.data.user).toHaveProperty('id');
       expect(body.data.user).toHaveProperty('name');
       expect(body.data.user).toHaveProperty('email');
-      expect(body.data.user).toHaveProperty('password');
       expect(body.data.user).toHaveProperty('profile');
       expect(body.data.bankName).toBe(seedAccounts[0].bankName);
       expect(body.data.bankAccountNumber).toBe(

@@ -101,7 +101,7 @@ module.exports = {
       res.status(200).json({
         status: true,
         message: 'login successfully',
-        data: { ...user, token }
+        data: { user, token }
       });
     } catch (error) {
       next(error);
@@ -112,7 +112,7 @@ module.exports = {
       res.status(200).json({
         status: true,
         message: 'successfully authenticated',
-        data: req.user
+        data: { user: req.user }
       });
     } catch (error) {
       next(error);

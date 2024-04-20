@@ -4,7 +4,7 @@ const { JWT_SECRET } = process.env;
 module.exports = async (req, res, next) => {
   const { authorization } = req.headers;
 
-  if (!authorization) {
+  if (!authorization || !authorization.split(' ')[1]) {
     return res.status(401).json({
       status: false,
       message: 'not authorized',
@@ -12,7 +12,9 @@ module.exports = async (req, res, next) => {
     });
   }
 
-  jwt.verify(authorization, JWT_SECRET, (error, user) => {
+  const token = authorization.split(' ')[1];
+
+  jwt.verify(token, JWT_SECRET, (error, user) => {
     if (error) {
       return res.status(401).json({
         status: false,
@@ -20,6 +22,8 @@ module.exports = async (req, res, next) => {
         data: null
       });
     }
+
+    delete user.iat;
 
     req.user = user;
     next();

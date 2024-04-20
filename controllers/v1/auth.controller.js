@@ -71,36 +71,40 @@ module.exports = {
     }
   },
   login: async (req, res, next) => {
-    const { email, password } = req.body;
+    try {
+      const { email, password } = req.body;
 
-    const user = await prisma.user.findUnique({
-      where: { email }
-    });
-    if (!user) {
-      return res.status(400).json({
-        status: false,
-        message: 'invalid email or password',
-        data: null
+      const user = await prisma.user.findUnique({
+        where: { email }
       });
-    }
+      if (!user) {
+        return res.status(400).json({
+          status: false,
+          message: 'invalid email or password',
+          data: null
+        });
+      }
 
-    const isPasswordCorrect = await compareHash(password, user.password);
-    if (!isPasswordCorrect) {
-      return res.status(400).json({
-        status: false,
-        message: 'invalid email or password',
-        data: null
+      const isPasswordCorrect = await compareHash(password, user.password);
+      if (!isPasswordCorrect) {
+        return res.status(400).json({
+          status: false,
+          message: 'invalid email or password',
+          data: null
+        });
+      }
+
+      delete user.password;
+
+      const token = jwt.sign(user, JWT_SECRET);
+
+      res.status(200).json({
+        status: true,
+        message: 'login successfully',
+        data: { ...user, token }
       });
+    } catch (error) {
+      next(error);
     }
-
-    delete user.password;
-
-    const token = jwt.sign(user, JWT_SECRET);
-
-    res.status(200).json({
-      status: true,
-      message: 'login successfully',
-      data: { ...user, token }
-    });
   }
 };

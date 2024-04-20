@@ -21,14 +21,6 @@ module.exports = {
             email: true
           }
         });
-      } else {
-        users = await prisma.user.findMany({
-          select: {
-            id: true,
-            name: true,
-            email: true
-          }
-        });
       }
 
       res.status(200).json({

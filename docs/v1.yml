@@ -178,45 +178,9 @@ paths:
                   data:
                     type: object
                     example: null
-  /api/v1/users:
-    get:
-      description: Fetch all user records
-      security:
-        - bearerAuth: []
-      parameters:
-        - schema:
-            type: string
-          name: search
-          in: query
-          required: false
-          description: User's name keyword
-      responses:
-        200:
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: boolean
-                    example: true
-                  message:
-                    type: string
-                    example: successfully fetched 1 user records
-                  data:
-                    items:
-                      $ref: '#/components/schemas/User'
-        401:
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UnauthorizedResponse'
+  /api/v1/auth/register:
     post:
-      description: Create a new user record
-      security:
-        - bearerAuth: []
+      description: Register a new user record
       requestBody:
         $ref: '#/components/requestBodies/User'
       responses:
@@ -251,6 +215,41 @@ paths:
                       - example: field 'name', 'email', 'password', 'identityType', 'identityNumber', and 'address' are required
                       - example: field identityType should have value of 'KTP', 'SIM', or 'Passport'
                       - example: already found a user profile record with corresponding identity number
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedResponse'
+  /api/v1/users:
+    get:
+      description: Fetch all user records
+      security:
+        - bearerAuth: []
+      parameters:
+        - schema:
+            type: string
+          name: search
+          in: query
+          required: false
+          description: User's name keyword
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: successfully fetched 1 user records
+                  data:
+                    items:
+                      $ref: '#/components/schemas/User'
         401:
           description: Unauthorized
           content:
